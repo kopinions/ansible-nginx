@@ -4,8 +4,17 @@
   apt_key: url=http://nginx.org/keys/nginx_signing.key
   tags: [packages,nginx]
 
-- name: ensure apt official nginx repository
-  apt_repository: repo="deb http://nginx.org/packages/{{ ansible_distribution|lower }}/ {{ ansible_distribution_release }} nginx"
+- name: NGINX | Adding sources.list deb url for NGINX
+  lineinfile: dest=/etc/apt/sources.list line="deb http://nginx.org/packages/mainline/{{ ansible_distribution|lower }} {{ ansible_distribution_release|lower }} nginx"
+  tags: [packages,nginx]
+
+- name: NGINX Plus | Adding sources.list deb-src url for NGINX
+  lineinfile: dest=/etc/apt/sources.list line="deb-src http://nginx.org/packages/mainline/{{ ansible_distribution|lower }} {{ ansible_distribution_release|lower }} nginx"
+  tags: [packages,nginx]
+
+- name: NGINX | Updating apt cache
+  apt:
+    update_cache: yes
   tags: [packages,nginx]
 
 - name: install the nginx packages
@@ -25,3 +34,4 @@
 
 - name: ensure nginx is running
   service: name=nginx state=started
+
